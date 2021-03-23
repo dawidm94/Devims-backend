@@ -1,30 +1,37 @@
 package pl.devims.controller;
 
+import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import pl.devims.entity.Token;
+import org.springframework.web.bind.annotation.*;
+import pl.devims.dto.SocialUserDto;
 import pl.devims.entity.User;
-import pl.devims.service.TokenService;
+import pl.devims.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
+@RequestMapping("/user")
 public class UserController {
 
-    private TokenService tokenService;
+    private UserService userService;
+
+    @PostMapping("/socialLogin")
+    public boolean socialLogin(@RequestBody SocialUserDto socialUser, HttpServletRequest request) {
+        boolean isLogged = userService.socialLogin(socialUser);
+        return isLogged;
+    }
 
     @PostMapping("/login")
     public String login(@RequestBody User user) {
-        return "login - " + user.getEmail() + ", pw - " + user.getPassword();
+        Gson gson = new Gson();
+        return gson.toJson(userService.login(user));
     }
-    @PostMapping("/testLogin")
-    public String loginNonAuth(@RequestBody User user, HttpServletRequest request) {
-        Token token = tokenService.generateNewToken();
-        request.getSession().setAttribute("token", token.getValue());
-        return "NON AUTH login - " + user.getEmail() + ", pw - " + user.getPassword();
+
+    @PostMapping("/register")
+    public boolean register(@RequestBody User user) throws Exception {
+        return userService.register(user);
     }
 
 }

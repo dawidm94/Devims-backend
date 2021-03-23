@@ -2,16 +2,17 @@ package pl.devims;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication()
 public class DevimsApplication {
+
+	@Bean
+	public PasswordEncoder encoder() {
+		return new BCryptPasswordEncoder();
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(DevimsApplication.class, args);

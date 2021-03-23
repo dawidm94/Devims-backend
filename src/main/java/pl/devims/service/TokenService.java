@@ -56,4 +56,13 @@ public class TokenService {
             updateToken(token);
             return token;
     }
+
+    public Token saveNewToken(String tokenValue) {
+        Token token = Token.builder()
+                .createDate(LocalDateTime.now())
+                .value(tokenValue)
+                .build();
+        updateToken(token);
+        return token;
+    }
 }
