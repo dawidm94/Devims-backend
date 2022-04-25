@@ -12,7 +12,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+import pl.devims.dao.EsorMetricDao;
 import pl.devims.dto.*;
+import pl.devims.entity.EsorMetric;
 
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
@@ -23,9 +25,12 @@ import java.util.regex.Pattern;
 public class EsorServiceImpl implements EsorService {
     private static final Logger log = LoggerFactory.getLogger(EsorServiceImpl.class);
     private final RestTemplate restTemplate;
+    private final EsorMetricDao esorMetricDao;
 
     @Override
     public String getToken(DtoEsorCredentials esorCredentials) {
+        increaseEsorMetricCounter(esorCredentials.getLogin());
+
         try {
             String response = restTemplate.postForObject("https://sedzia.pzkosz.pl/api/login", esorCredentials, String.class);
             JSONObject jsonObject = new JSONObject(response);
@@ -35,6 +40,13 @@ public class EsorServiceImpl implements EsorService {
             log.error("Login esor error.", e);
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    private void increaseEsorMetricCounter(String login) {
+        EsorMetric esorMetric = esorMetricDao.findByLogin(login).orElse(new EsorMetric(login));
+        esorMetric.setCounter(esorMetric.getCounter() + 1);
+
+        esorMetricDao.save(esorMetric);
     }
 
     @Override
