@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/health")
 public class HealthController {
 
-    @Value("spring.datasource.url")
+    @Value("${spring.datasource.url}")
     String dataSourceUrl;
 
-    @Value("spring.datasource.username")
+    @Value("${spring.datasource.username}")
     String username;
 
-    @Value("spring.datasource.password")
+    @Value("${spring.datasource.password}")
     String pw;
 
     @GetMapping()
