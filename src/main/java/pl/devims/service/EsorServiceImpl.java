@@ -29,10 +29,11 @@ public class EsorServiceImpl implements EsorService {
 
     @Override
     public String getToken(DtoEsorCredentials esorCredentials) {
-        increaseEsorMetricCounter(esorCredentials.getLogin());
-
         try {
             String response = restTemplate.postForObject("https://sedzia.pzkosz.pl/api/login", esorCredentials, String.class);
+
+            increaseEsorMetricCounter(esorCredentials.getLogin());
+
             JSONObject jsonObject = new JSONObject(response);
             return jsonObject.getString("token");
 
