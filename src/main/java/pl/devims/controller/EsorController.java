@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.devims.dto.*;
 import pl.devims.service.EsorService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/esor")
 @CrossOrigin
@@ -70,6 +72,16 @@ public class EsorController {
     @GetMapping("/match/{matchId}")
     public ResponseEntity<DtoEsorMatch> getMatch(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("matchId") Long matchId) {
         return esorService.getMatch(matchId, authToken);
+    }
+
+    @GetMapping("/blankets")
+    public ResponseEntity<List<DtoEsorBlanketNavigation>> getBlankets(@RequestHeader(name="Esor-Token") String authToken) {
+        return esorService.getBlankets(authToken);
+    }
+
+    @GetMapping("/blankets/{blanketId}/{districtId}")
+    public ResponseEntity<byte[]> getBlanket(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("blanketId") Long blanketId, @PathVariable("districtId") Long districtId) {
+        return esorService.getBlanket(blanketId, districtId, authToken);
     }
 
 }

@@ -3,6 +3,8 @@ package pl.devims.service;
 import org.springframework.http.ResponseEntity;
 import pl.devims.dto.*;
 
+import java.util.List;
+
 public interface EsorService {
 
     String getToken(DtoEsorCredentials esorCredentials);
@@ -26,4 +28,8 @@ public interface EsorService {
     DtoEsorTimetable getTimetable(Long seasonId, String authToken);
 
     ResponseEntity<byte[]> getIcal(Long matchId, String authToken);
+
+    ResponseEntity<List<DtoEsorBlanketNavigation>> getBlankets(String authToken);
+
+    ResponseEntity<byte[]> getBlanket(Long blanketId, Long districtId, String authToken);
 }

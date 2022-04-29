@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -18,6 +19,7 @@ import pl.devims.entity.EsorMetric;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -202,6 +204,32 @@ public class EsorServiceImpl implements EsorService {
         return ResponseEntity.ok()
                 .contentType(new MediaType("text", "calendar", StandardCharsets.UTF_8))
                 .body(icalWithEndTime.getBytes());
+    }
+
+    @Override
+    public ResponseEntity<List<DtoEsorBlanketNavigation>> getBlankets(String authToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + authToken);
+
+            return restTemplate.exchange("https://sedzia.pzkosz.pl/api/blankets", HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {
+            });
+
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode());
+        }
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getBlanket(Long blanketId, Long districtId, String authToken) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpEntity<MultiValueMap<String, String>> entity = getFormUrlEncodedEntity(authToken);
+
+        return restTemplate.exchange("https://sedzia.pzkosz.pl/api/blankets/" + blanketId + "/" + districtId,
+                HttpMethod.POST,
+                entity,
+                byte[].class);
     }
 
     private String getEndTimeFromIcal(String icalText) {
