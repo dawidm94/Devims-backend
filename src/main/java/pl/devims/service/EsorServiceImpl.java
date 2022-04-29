@@ -138,6 +138,18 @@ public class EsorServiceImpl implements EsorService {
     }
 
     @Override
+    public ResponseEntity<byte[]> getMetric(Long matchId, String authToken) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpEntity<MultiValueMap<String, String>> entity = getFormUrlEncodedEntity(authToken);
+
+        return restTemplate.exchange("https://sedzia.pzkosz.pl/api/match/" + matchId + "/metric",
+            HttpMethod.POST,
+            entity,
+            byte[].class);
+    }
+
+    @Override
     public ResponseEntity<DtoEsorMatch> getMatch(Long matchId, String authToken) {
         try {
             HttpHeaders headers = new HttpHeaders();

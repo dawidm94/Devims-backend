@@ -19,6 +19,8 @@ public interface EsorService {
 
     ResponseEntity<byte[]> getDelegation(Long matchId, Long districtId, String authToken);
 
+    ResponseEntity<byte[]> getMetric(Long matchId, String authToken);
+
     ResponseEntity<DtoEsorMatch> getMatch(Long matchId, String authToken);
 
     DtoEsorTimetable getTimetable(Long seasonId, String authToken);

@@ -57,6 +57,11 @@ public class EsorController {
         return esorService.getDelegation(matchId, districtId, authToken);
     }
 
+    @GetMapping("/match/{matchId}/metric")
+    public ResponseEntity<byte[]> getMetric(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("matchId") Long matchId) {
+        return esorService.getMetric(matchId, authToken);
+    }
+
     @GetMapping("/match/{matchId}/ical")
     public ResponseEntity<byte[]> getIcal(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("matchId") Long matchId) {
         return esorService.getIcal(matchId, authToken);
