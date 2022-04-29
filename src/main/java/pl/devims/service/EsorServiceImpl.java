@@ -17,6 +17,7 @@ import pl.devims.dto.*;
 import pl.devims.entity.EsorMetric;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,14 +39,23 @@ public class EsorServiceImpl implements EsorService {
             return jsonObject.getString("token");
 
         } catch (Exception e) {
+            updateFailedLoginInEsorMetric(esorCredentials.getLogin());
+
             log.error("Login esor error.", e);
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
     }
 
+    private void updateFailedLoginInEsorMetric(String login) {
+        EsorMetric esorMetric = esorMetricDao.findByLogin(login).orElse(new EsorMetric(login));
+        esorMetric.setLastFailedLogin(LocalDateTime.now());
+        esorMetricDao.save(esorMetric);
+    }
+
     private void increaseEsorMetricCounter(String login) {
         EsorMetric esorMetric = esorMetricDao.findByLogin(login).orElse(new EsorMetric(login));
         esorMetric.setCounter(esorMetric.getCounter() + 1);
+        esorMetric.setLastSuccessLogin(LocalDateTime.now());
 
         esorMetricDao.save(esorMetric);
     }
