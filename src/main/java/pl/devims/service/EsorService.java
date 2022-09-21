@@ -32,4 +32,16 @@ public interface EsorService {
     ResponseEntity<List<DtoEsorBlanketNavigation>> getBlankets(String authToken);
 
     ResponseEntity<byte[]> getBlanket(Long blanketId, Long districtId, String authToken);
+
+    int countNominations(Long seasonId, String authToken);
+
+    DtoEsorTimetable getNominations(Long seasonId, String authToken);
+
+    DtoEsorNomination getNominationDetails(Long matchId, String authToken);
+
+    void rejectNomination(Long matchId, String authToken);
+
+    ResponseEntity<DtoEsorUser> getUser(String authToken);
+
+    void confirmNotification(DtoEsorConfirmNomination nomination, Long matchId, String authToken);
 }

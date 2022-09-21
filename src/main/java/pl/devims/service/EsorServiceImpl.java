@@ -232,6 +232,91 @@ public class EsorServiceImpl implements EsorService {
                 byte[].class);
     }
 
+    @Override
+    public int countNominations(Long seasonId, String authToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + authToken);
+
+            String response = restTemplate.exchange("https://sedzia.pzkosz.pl/api/nominations/count?seasonId=" + seasonId, HttpMethod.GET, new HttpEntity<>(headers), String.class).getBody();
+
+            JSONObject jsonObject = new JSONObject(response);
+            return jsonObject.getInt("count");
+
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode());
+        }
+    }
+
+    @Override
+    public DtoEsorTimetable getNominations(Long seasonId, String authToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + authToken);
+
+            return restTemplate.exchange("https://sedzia.pzkosz.pl/api/nominations?seasonId=" + seasonId + "&page=1&perPage=1000", HttpMethod.GET, new HttpEntity<>(headers), DtoEsorTimetable.class).getBody();
+
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode());
+        }
+    }
+
+    @Override
+    public DtoEsorNomination getNominationDetails(Long matchId, String authToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + authToken);
+
+            return restTemplate.exchange("https://sedzia.pzkosz.pl/api/nominations/" + matchId, HttpMethod.GET, new HttpEntity<>(headers), DtoEsorNomination.class).getBody();
+
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode());
+        }
+    }
+
+    @Override
+    public void rejectNomination(Long matchId, String authToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + authToken);
+
+            ResponseEntity<String> response = restTemplate.exchange("https://sedzia.pzkosz.pl/api/nominations/" + matchId + "/reject", HttpMethod.POST, new HttpEntity<>(headers), String.class);
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new ResponseStatusException(response.getStatusCode());
+            }
+
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode());
+        }
+    }
+
+    @Override
+    public ResponseEntity<DtoEsorUser> getUser(String authToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + authToken);
+
+            return restTemplate.exchange("https://sedzia.pzkosz.pl/api/user", HttpMethod.GET, new HttpEntity<>(headers), DtoEsorUser.class);
+
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode());
+        }
+    }
+
+    @Override
+    public void confirmNotification(DtoEsorConfirmNomination nomination, Long matchId, String authToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + authToken);
+
+            restTemplate.exchange("https://sedzia.pzkosz.pl/api/nominations/" + matchId + "/confirm", HttpMethod.POST, new HttpEntity<>(nomination, headers), Void.class);
+
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode());
+        }
+    }
+
     private String getEndTimeFromIcal(String icalText) {
         String pattern = "(DTSTART:\\d+T(\\d{2})\\d+Z)";
         Pattern r = Pattern.compile(pattern);

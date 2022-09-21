@@ -49,6 +49,33 @@ public class EsorController {
         return ResponseEntity.ok(esorService.getUpcomingMatch(seasonId, authToken));
     }
 
+    @GetMapping("/nominations")
+    public ResponseEntity<DtoEsorTimetable> getNominations(@RequestHeader(name="Esor-Token") String authToken, @RequestParam("seasonId") Long seasonId) {
+        return ResponseEntity.ok(esorService.getNominations(seasonId, authToken));
+    }
+
+    @GetMapping("/nominations/{matchId}")
+    public ResponseEntity<DtoEsorNomination> getNominationDetails(@RequestHeader(name="Esor-Token") String authToken, @PathVariable Long matchId) {
+        return ResponseEntity.ok(esorService.getNominationDetails(matchId, authToken));
+    }
+
+    @PostMapping("/nominations/{matchId}/confirm")
+    public ResponseEntity<Void> confirmNomination(@RequestHeader(name="Esor-Token") String authToken, @RequestBody DtoEsorConfirmNomination nomination, @PathVariable Long matchId) {
+        esorService.confirmNotification(nomination, matchId, authToken);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/nominations/{matchId}/reject")
+    public ResponseEntity<Void> rejectNomination(@RequestHeader(name="Esor-Token") String authToken, @PathVariable Long matchId) {
+        esorService.rejectNomination(matchId, authToken);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/nominations/count")
+    public ResponseEntity<Integer> countNominations(@RequestHeader(name="Esor-Token") String authToken, @RequestParam("seasonId") Long seasonId) {
+        return ResponseEntity.ok(esorService.countNominations(seasonId, authToken));
+    }
+
     @GetMapping("/timetable/my")
     public ResponseEntity<DtoEsorTimetable> getTimetable(@RequestHeader(name="Esor-Token") String authToken, @RequestParam("seasonId") Long seasonId) {
         return ResponseEntity.ok(esorService.getTimetable(seasonId, authToken));
@@ -84,4 +111,8 @@ public class EsorController {
         return esorService.getBlanket(blanketId, districtId, authToken);
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<DtoEsorUser> getUser(@RequestHeader(name="Esor-Token") String authToken) {
+        return esorService.getUser(authToken);
+    }
 }
