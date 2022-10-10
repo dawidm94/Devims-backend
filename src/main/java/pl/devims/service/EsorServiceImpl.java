@@ -20,8 +20,10 @@ import pl.devims.entity.EsorMetric;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -71,6 +73,20 @@ public class EsorServiceImpl implements EsorService {
             headers.set("Authorization", "Bearer " + authToken);
 
             return restTemplate.exchange("https://sedzia.pzkosz.pl/api/me", HttpMethod.GET, new HttpEntity<>(headers), DtoEsorMyProfile.class).getBody();
+
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode());
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<DtoEsorSeason>> getSeasons(String authToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + authToken);
+
+            return restTemplate.exchange("https://sedzia.pzkosz.pl/api/seasons", HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {
+            });
 
         } catch (HttpClientErrorException e) {
             throw new ResponseStatusException(e.getStatusCode());
@@ -315,6 +331,23 @@ public class EsorServiceImpl implements EsorService {
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new ResponseStatusException(e.getStatusCode());
         }
+    }
+
+    @Override
+    public ResponseEntity<DtoEsorEarnings> getEarnings(Long seasonId, String authToken) {
+        DtoEsorEarnings earnings = new DtoEsorEarnings();
+
+        Set<Long> matchIds = getTimetable(seasonId, authToken).getItems()
+                .stream()
+                .map(DtoEsorMatch::getId)
+                .collect(Collectors.toSet());
+
+        matchIds.forEach(matchId -> {
+            DtoEsorNomination nominationDetails = getNominationDetails(matchId, authToken);
+            earnings.addAmount(nominationDetails);
+        });
+
+        return ResponseEntity.ok(earnings);
     }
 
     private String getEndTimeFromIcal(String icalText) {

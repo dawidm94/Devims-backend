@@ -11,6 +11,8 @@ public interface EsorService {
 
     DtoEsorMyProfile getMyProfile(String authToken);
 
+    ResponseEntity<List<DtoEsorSeason>> getSeasons(String authToken);
+
     DtoEsorSeason getCurrentSeason(String authToken);
 
     DtoEsorPeriod getPeriodList(Long seasonId, String authToken);
@@ -44,4 +46,6 @@ public interface EsorService {
     ResponseEntity<DtoEsorUser> getUser(String authToken);
 
     void confirmNotification(DtoEsorConfirmNomination nomination, Long matchId, String authToken);
+
+    ResponseEntity<DtoEsorEarnings> getEarnings(Long seasonId, String authToken);
 }

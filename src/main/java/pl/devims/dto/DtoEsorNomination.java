@@ -2,6 +2,7 @@ package pl.devims.dto;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -14,7 +15,7 @@ public class DtoEsorNomination {
     private Integer costPerKilometerGross;
     private Integer costTransport;
     private Integer costTravel;
-    private String date;
+    private LocalDate date;
     private String departure;
     private Integer distance;
     private Boolean distanceError;
@@ -22,7 +23,7 @@ public class DtoEsorNomination {
     private String distanceGoogle;
     private Integer documentType;
     private Integer equivalent;
-    private List<DtoEquivalentOption> equivalentOptions;
+    private List<DtoEsorEquivalentOption> equivalentOptions;
     private Integer equivalentType;
     private Boolean hasDelegationNumber;
     private String league;
@@ -37,7 +38,7 @@ public class DtoEsorNomination {
     private String teamHome;
     private String teamVisitor;
     private String time;
-    private int toPay;
+    private double toPay;
     private int update;
     private String vehicleBrand;
     private String vehicleEngineSize;

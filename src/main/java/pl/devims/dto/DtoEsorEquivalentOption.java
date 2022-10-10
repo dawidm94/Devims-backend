@@ -3,7 +3,7 @@ package pl.devims.dto;
 import lombok.Data;
 
 @Data
-public class DtoEquivalentOption {
+public class DtoEsorEquivalentOption {
 
     private int gross;
     private String name;

@@ -28,6 +28,11 @@ public class EsorController {
         return ResponseEntity.ok(esorService.getMyProfile(authToken));
     }
 
+    @GetMapping("/seasons")
+    public ResponseEntity<List<DtoEsorSeason>> getSeasons(@RequestHeader(name="Esor-Token") String authToken) {
+        return esorService.getSeasons(authToken);
+    }
+
     @GetMapping("/seasons/current")
     public ResponseEntity<DtoEsorSeason> getCurrentSeason(@RequestHeader(name="Esor-Token") String authToken) {
         return ResponseEntity.ok(esorService.getCurrentSeason(authToken));
@@ -114,5 +119,10 @@ public class EsorController {
     @GetMapping("/user")
     public ResponseEntity<DtoEsorUser> getUser(@RequestHeader(name="Esor-Token") String authToken) {
         return esorService.getUser(authToken);
+    }
+
+    @PostMapping("/earnings")
+    public ResponseEntity<DtoEsorEarnings> getEarnings(@RequestHeader(name="Esor-Token") String authToken, @RequestBody Long seasonId) {
+        return esorService.getEarnings(seasonId, authToken);
     }
 }
