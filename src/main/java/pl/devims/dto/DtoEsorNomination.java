@@ -19,7 +19,7 @@ public class DtoEsorNomination {
     private String departure;
     private Integer distance;
     private Boolean distanceError;
-    private Boolean distanceErrorMessage;
+    private String distanceErrorMessage;
     private String distanceGoogle;
     private Integer documentType;
     private Integer equivalent;
