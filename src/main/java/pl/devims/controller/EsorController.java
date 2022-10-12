@@ -3,6 +3,7 @@ package pl.devims.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.devims.dto.*;
+import pl.devims.entity.EsorEarnings;
 import pl.devims.service.EsorService;
 
 import java.util.List;
@@ -122,7 +123,12 @@ public class EsorController {
     }
 
     @PostMapping("/earnings")
-    public ResponseEntity<DtoEsorEarnings> getEarnings(@RequestHeader(name="Esor-Token") String authToken, @RequestBody Long seasonId) {
-        return esorService.getEarnings(seasonId, authToken);
+    public ResponseEntity<EsorEarnings> calculateEarnings(@RequestHeader(name="Esor-Token") String authToken, @RequestBody Long seasonId) {
+        return esorService.calculateEarnings(seasonId, authToken);
+    }
+
+    @GetMapping("/earnings/check/{uuid}")
+    public ResponseEntity<EsorEarnings> getEarnings(@PathVariable String uuid, @RequestHeader(name="Esor-Token") String authToken) {
+        return esorService.getEarnings(uuid, authToken);
     }
 }

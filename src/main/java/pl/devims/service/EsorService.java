@@ -2,6 +2,7 @@ package pl.devims.service;
 
 import org.springframework.http.ResponseEntity;
 import pl.devims.dto.*;
+import pl.devims.entity.EsorEarnings;
 
 import java.util.List;
 
@@ -47,5 +48,7 @@ public interface EsorService {
 
     void confirmNotification(DtoEsorConfirmNomination nomination, Long matchId, String authToken);
 
-    ResponseEntity<DtoEsorEarnings> getEarnings(Long seasonId, String authToken);
+    ResponseEntity<EsorEarnings> calculateEarnings(Long seasonId, String authToken);
+
+    ResponseEntity<EsorEarnings> getEarnings(String uuid, String authToken);
 }

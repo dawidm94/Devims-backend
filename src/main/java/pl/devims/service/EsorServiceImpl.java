@@ -13,14 +13,19 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+import pl.devims.dao.EsorEarningsDao;
 import pl.devims.dao.EsorMetricDao;
 import pl.devims.dto.*;
+import pl.devims.entity.EsorEarnings;
 import pl.devims.entity.EsorMetric;
+import pl.devims.model.ProcessStatus;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,6 +36,8 @@ public class EsorServiceImpl implements EsorService {
     private static final Logger log = LoggerFactory.getLogger(EsorServiceImpl.class);
     private final RestTemplate restTemplate;
     private final EsorMetricDao esorMetricDao;
+    private final EsorEarningsAsyncService esorEarningsAsyncService;
+    private final EsorEarningsDao esorEarningsDao;
 
     @Override
     public String getToken(DtoEsorCredentials esorCredentials) {
@@ -334,20 +341,30 @@ public class EsorServiceImpl implements EsorService {
     }
 
     @Override
-    public ResponseEntity<DtoEsorEarnings> getEarnings(Long seasonId, String authToken) {
-        DtoEsorEarnings earnings = new DtoEsorEarnings();
+    public ResponseEntity<EsorEarnings> calculateEarnings(Long seasonId, String authToken) {
+        String uuid = UUID.randomUUID().toString();
+
+        EsorEarnings earnings = new EsorEarnings();
+        earnings.setUuid(uuid);
+        earnings.setStatus(ProcessStatus.PENDING);
+
+        esorEarningsDao.save(earnings);
 
         Set<Long> matchIds = getTimetable(seasonId, authToken).getItems()
                 .stream()
                 .map(DtoEsorMatch::getId)
                 .collect(Collectors.toSet());
 
-        matchIds.forEach(matchId -> {
-            DtoEsorNomination nominationDetails = getNominationDetails(matchId, authToken);
-            earnings.addAmount(nominationDetails);
-        });
+        esorEarningsAsyncService.countEarningsAsync(earnings, matchIds, authToken);
 
         return ResponseEntity.ok(earnings);
+    }
+
+    @Override
+    public ResponseEntity<EsorEarnings> getEarnings(String uuid, String authToken) {
+        Optional<EsorEarnings> earnings = esorEarningsDao.findById(uuid);
+
+        return ResponseEntity.ok(earnings.orElse(new EsorEarnings()));
     }
 
     private String getEndTimeFromIcal(String icalText) {
