@@ -51,4 +51,7 @@ public interface EsorService {
     ResponseEntity<EsorEarnings> calculateEarnings(Long seasonId, String authToken);
 
     ResponseEntity<EsorEarnings> getEarnings(String uuid, String authToken);
+
+    ResponseEntity<DtoEsorFinancialData> getFinancialData(String authToken);
+
 }

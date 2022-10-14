@@ -122,6 +122,11 @@ public class EsorController {
         return esorService.getUser(authToken);
     }
 
+    @GetMapping("/user/financial-data")
+    public ResponseEntity<DtoEsorFinancialData> getFinancialData(@RequestHeader(name="Esor-Token") String authToken) {
+        return esorService.getFinancialData(authToken);
+    }
+
     @PostMapping("/earnings")
     public ResponseEntity<EsorEarnings> calculateEarnings(@RequestHeader(name="Esor-Token") String authToken, @RequestBody Long seasonId) {
         return esorService.calculateEarnings(seasonId, authToken);

@@ -367,6 +367,19 @@ public class EsorServiceImpl implements EsorService {
         return ResponseEntity.ok(earnings.orElse(new EsorEarnings()));
     }
 
+    @Override
+    public ResponseEntity<DtoEsorFinancialData> getFinancialData(String authToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + authToken);
+
+            return restTemplate.exchange("https://sedzia.pzkosz.pl/api/user/financial-data", HttpMethod.GET, new HttpEntity<>(headers), DtoEsorFinancialData.class);
+
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(e.getStatusCode());
+        }
+    }
+
     private String getEndTimeFromIcal(String icalText) {
         String pattern = "(DTSTART:\\d+T(\\d{2})\\d+Z)";
         Pattern r = Pattern.compile(pattern);
