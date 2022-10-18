@@ -77,6 +77,17 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.3.3</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-hibernate5</artifactId>
+			<version>2.13.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vladmihalcea</groupId>
+			<artifactId>hibernate-types-52</artifactId>
+			<!--for hibernate >= 5.2-->
+			<version>2.19.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
