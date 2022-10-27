@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>pl.devims</groupId>
 	<artifactId>devims</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>devims</name>
 	<description>Devims application</description>
 	<properties>
@@ -100,6 +100,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>devims</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
