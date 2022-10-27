@@ -1,6 +1,6 @@
 stages:                          
  - build                         
- - deploy                        
+#  - deploy                        
                                  
 maven-build:                     
   image: maven:3-jdk-17          
