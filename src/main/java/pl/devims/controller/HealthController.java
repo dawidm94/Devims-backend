@@ -13,6 +13,6 @@ public class HealthController {
 
     @GetMapping()
     public ResponseEntity<String> getVersion() {
-        return ResponseEntity.ok("I am alive!!");
+        return ResponseEntity.ok("I am alive!");
     }
 }
