@@ -1,0 +1,11 @@
+stages:                          
+ - build                         
+#  - deploy                        
+                                 
+maven-build:                     
+  image: maven:3.8.3-openjdk-17          
+  stage: build                   
+  script: "mvn package -B"       
+  artifacts:                     
+    paths:                       
+        - target/gitlab-ci-demo.jar
