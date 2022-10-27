@@ -19,5 +19,5 @@ deploy-main:
     - sshpass -V                                                                                                                                
     - export SSHPASS=$CI_USER_PASS                                                                                                              
     - sshpass -e scp -o StrictHostKeyChecking=no target/devims.jar gitlab-ci@146.59.94.173:/home/gitlab-ci                            
-    - sshpass -e ssh -tt -o StrictHostKeyChecking=no gitlab-ci@146.59.94.173 sudo mv /home/gitlab-ci/devims.jar /home/ubuntu/devims.jar     
-    - sshpass -e ssh -tt -o StrictHostKeyChecking=no gitlab-ci@146.59.94.173 sudo systemctl restart gitlab-ci-demo.service                    
+    - sshpass -e ssh -tt -o StrictHostKeyChecking=no gitlab-ci@146.59.94.173 sudo mv /home/gitlab-ci/devims.jar /opt/java/devims.jar     
+    - sshpass -e ssh -tt -o StrictHostKeyChecking=no gitlab-ci@146.59.94.173 sudo systemctl restart devims-backend.service                    
