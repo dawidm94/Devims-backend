@@ -1,23 +1,22 @@
-stages:                          
- - build                         
+stages:
+ - build
  - deploy
-                                 
-maven-build:                     
-  image: maven:3.8.3-openjdk-17          
-  stage: build                   
-  script: "mvn package -B"       
-  artifacts:              
-    when: always       
-    paths:                       
+
+maven-build:
+  image: maven:3.8.3-openjdk-17
+  stage: build
+  script: "mvn package -B"
+  artifacts:
+    paths:
         - target/devims.jar
         
-deploy-main:                                                                                                                                  
-  before_script:                                                                                                                                
-    - apt-get update -qq && apt-get install -y -qq sshpass                                                                                      
-  stage: deploy                                                                                                                                 
-  script:                                                                                                                                       
-    - sshpass -V                                                                                                                                
-    - export SSHPASS=$CI_USER_PASS                                                                                                              
-    - sshpass -e scp -o StrictHostKeyChecking=no target/devims.jar gitlab-ci@146.59.94.173:/home/gitlab-ci                            
-    - sshpass -e ssh -tt -o StrictHostKeyChecking=no gitlab-ci@146.59.94.173 sudo mv /home/gitlab-ci/devims.jar /opt/java/devims.jar     
-    - sshpass -e ssh -tt -o StrictHostKeyChecking=no gitlab-ci@146.59.94.173 sudo systemctl restart devims-backend.service                    
+deploy-main:
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq sshpass
+  stage: deploy
+  script:
+    - sshpass -V
+    - export SSHPASS=$CI_USER_PASS
+    - sshpass -e scp -o StrictHostKeyChecking=no target/devims.jar gitlab-ci@146.59.94.173:/home/gitlab-ci
+    - sshpass -e ssh -tt -o StrictHostKeyChecking=no gitlab-ci@146.59.94.173 sudo mv /home/gitlab-ci/devims.jar /opt/java/devims.jar
+    - sshpass -e ssh -tt -o StrictHostKeyChecking=no gitlab-ci@146.59.94.173 sudo systemctl restart devims-backend.service
