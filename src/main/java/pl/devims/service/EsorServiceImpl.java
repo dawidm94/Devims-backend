@@ -60,13 +60,13 @@ public class EsorServiceImpl implements EsorService {
     }
 
     private void updateFailedLoginInEsorMetric(String login) {
-        EsorMetric esorMetric = esorMetricDao.findByLogin(login).orElse(new EsorMetric(login));
+        EsorMetric esorMetric = esorMetricDao.findByLoginIgnoreCase(login).orElse(new EsorMetric(login));
         esorMetric.setLastFailedLogin(LocalDateTime.now());
         esorMetricDao.save(esorMetric);
     }
 
     private void increaseEsorMetricCounter(String login) {
-        EsorMetric esorMetric = esorMetricDao.findByLogin(login).orElse(new EsorMetric(login));
+        EsorMetric esorMetric = esorMetricDao.findByLoginIgnoreCase(login).orElse(new EsorMetric(login));
         esorMetric.setCounter(esorMetric.getCounter() + 1);
         esorMetric.setLastSuccessLogin(LocalDateTime.now());
 
