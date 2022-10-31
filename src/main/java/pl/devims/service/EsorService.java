@@ -18,7 +18,7 @@ public interface EsorService {
 
     DtoEsorPeriod getPeriodList(Long seasonId, String authToken);
 
-    void setPeriods(DtoEsorSetPeriod esorSetPeriod, String authToken);
+    void setPeriods(DtoEsorSetPeriod esorSetPeriod, String authToken) throws InterruptedException;
 
     DtoEsorUpcomingMatch getUpcomingMatch(Long seasonId, String authToken);
 
