@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -38,6 +39,8 @@ public class EsorServiceImpl implements EsorService {
     private final EsorMetricDao esorMetricDao;
     private final EsorEarningsAsyncService esorEarningsAsyncService;
     private final EsorEarningsDao esorEarningsDao;
+
+    private final int GATEWAY_TIMEOUT_MAX_RECALL_ATTEMPTS = 10;
 
     @Override
     public String getToken(DtoEsorCredentials esorCredentials) {
@@ -127,7 +130,7 @@ public class EsorServiceImpl implements EsorService {
     }
 
     @Override
-    public void setPeriods(DtoEsorSetPeriod esorSetPeriod, String authToken) {
+    public void setPeriods(DtoEsorSetPeriod esorSetPeriod, String authToken) throws InterruptedException {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + authToken);
@@ -135,6 +138,20 @@ public class EsorServiceImpl implements EsorService {
             restTemplate.exchange("https://sedzia.pzkosz.pl/api/periods", HttpMethod.POST, new HttpEntity<>(esorSetPeriod, headers), Void.class);
 
         } catch (HttpClientErrorException | HttpServerErrorException e) {
+            if (HttpStatus.GATEWAY_TIMEOUT.equals(e.getStatusCode())) {
+                int periodsSize = 0, attemptCounter = 0;
+                while (periodsSize != esorSetPeriod.getPeriods().size() && attemptCounter < GATEWAY_TIMEOUT_MAX_RECALL_ATTEMPTS) {
+                    TimeUnit.SECONDS.sleep(2);
+                    attemptCounter++;
+
+                    DtoEsorPeriod periods = getPeriodList(Long.parseLong(esorSetPeriod.getSeasonId()), authToken);
+                    periodsSize = periods.getItems().size();
+                }
+
+                if (periodsSize == esorSetPeriod.getPeriods().size()) {
+                    return;
+                }
+            }
             throw new ResponseStatusException(e.getStatusCode());
         }
     }

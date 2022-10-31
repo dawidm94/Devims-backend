@@ -45,7 +45,7 @@ public class EsorController {
     }
 
     @PostMapping("/periods")
-    public ResponseEntity<Void> setPeriods(@RequestHeader(name="Esor-Token") String authToken, @RequestBody DtoEsorSetPeriod esorSetPeriod) {
+    public ResponseEntity<Void> setPeriods(@RequestHeader(name="Esor-Token") String authToken, @RequestBody DtoEsorSetPeriod esorSetPeriod) throws InterruptedException {
         esorService.setPeriods(esorSetPeriod, authToken);
         return ResponseEntity.ok().build();
     }
