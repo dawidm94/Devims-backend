@@ -87,9 +87,9 @@ public class EsorController {
         return ResponseEntity.ok(esorService.getTimetable(seasonId, authToken));
     }
 
-    @GetMapping("/match/{matchId}/delegation/{districtId}")
-    public ResponseEntity<byte[]> getDelegation(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("matchId") Long matchId, @PathVariable("districtId") Long districtId) {
-        return esorService.getDelegation(matchId, districtId, authToken);
+    @GetMapping("/match/{matchId}/delegation")
+    public ResponseEntity<byte[]> getDelegation(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("matchId") Long matchId, @RequestParam("seasonId") Long seasonId) throws Exception {
+        return esorService.getDelegation(matchId, seasonId, authToken);
     }
 
     @GetMapping("/match/{matchId}/metric")

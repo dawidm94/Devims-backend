@@ -22,7 +22,9 @@ public interface EsorService {
 
     DtoEsorUpcomingMatch getUpcomingMatch(Long seasonId, String authToken);
 
-    ResponseEntity<byte[]> getDelegation(Long matchId, Long districtId, String authToken);
+    ResponseEntity<byte[]> getDelegation(Long matchId, Long seasonId, String authToken) throws Exception;
+
+    List<DtoEsorInstances> getInstances(Long seasonId, String authToken);
 
     ResponseEntity<byte[]> getMetric(Long matchId, String authToken);
 

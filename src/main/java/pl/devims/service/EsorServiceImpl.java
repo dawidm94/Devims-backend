@@ -40,6 +40,15 @@ public class EsorServiceImpl implements EsorService {
     private final EsorEarningsAsyncService esorEarningsAsyncService;
     private final EsorEarningsDao esorEarningsDao;
 
+    private final List<String> RC_LIST = List.of(
+            "2 Liga Mężczyzn",
+            "1 Liga Kobiet",
+            "Suzuki 1 Liga Mężczyzn",
+            "Energa Basket Liga Kobiet",
+            "Energa Basket Liga"
+    );
+    private final long RC_INSTANCE_ID = 1L;
+
     private final int GATEWAY_TIMEOUT_MAX_RECALL_ATTEMPTS = 10;
 
     @Override
@@ -170,15 +179,48 @@ public class EsorServiceImpl implements EsorService {
     }
 
     @Override
-    public ResponseEntity<byte[]> getDelegation(Long matchId, Long districtId, String authToken) {
+    public ResponseEntity<byte[]> getDelegation(Long matchId, Long seasonId, String authToken) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpEntity<MultiValueMap<String, String>> entity = getFormUrlEncodedEntity(authToken);
+
+        Long districtId = determineDistrictId(matchId, seasonId, authToken);
 
         return restTemplate.exchange("https://sedzia.pzkosz.pl/api/match/" + matchId + "/delegation/" + districtId,
             HttpMethod.POST,
             entity,
             byte[].class);
+    }
+
+    private Long determineDistrictId(Long matchId, Long seasonId, String authToken) throws Exception {
+        List<DtoEsorInstances> instances = getInstances(seasonId, authToken);
+        if (instances.size() == 1) {
+            return instances.get(0).getId();
+        }
+
+        DtoEsorMatch match = getMatch(matchId, authToken).getBody();
+
+        if ((match != null && match.getTableReferees().size() == 4)
+                || (match != null && match.getLeague() != null && RC_LIST.contains(match.getLeague()))) {
+            return RC_INSTANCE_ID;
+
+        } else {
+            return instances.stream()
+                    .filter(instance -> RC_INSTANCE_ID != instance.getId())
+                    .findFirst()
+                    .orElseThrow(() -> new Exception("Couldn't determine instance."))
+                    .getId();
+        }
+    }
+
+    @Override
+    public List<DtoEsorInstances> getInstances(Long seasonId, String authToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + authToken);
+
+        return restTemplate.exchange("https://sedzia.pzkosz.pl/api/instances?seasonId=" + seasonId,
+                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<List<DtoEsorInstances>>() {})
+                .getBody();
     }
 
     @Override
