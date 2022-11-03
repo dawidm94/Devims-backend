@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -26,12 +27,12 @@ public class EsorEarnings {
     @Id
     private String uuid;
     private String status;
-    private double alreadyEarnedAmount;
-    private double futureNominationsAmount;
+    private BigDecimal alreadyEarnedAmount = BigDecimal.ZERO;
+    private BigDecimal futureNominationsAmount = BigDecimal.ZERO;
 
     @Type( type = "json" )
     @Column(columnDefinition="TEXT")
-    private Map<String, Double> teamPayments;
+    private Map<String, BigDecimal> teamPayments;
 
     @UpdateTimestamp
     private LocalDateTime lastModifiedDateTime;
@@ -43,8 +44,8 @@ public class EsorEarnings {
     public void addAmount(DtoEsorNomination nomination) {
         String teamHome = nomination.getTeamHome().trim();
 
-        Double teamHomeSumAmount = this.teamPayments.get(teamHome) != null
-                ? (this.teamPayments.get(teamHome) + nomination.getToPay())
+        BigDecimal teamHomeSumAmount = this.teamPayments.get(teamHome) != null
+                ? (this.teamPayments.get(teamHome).add(nomination.getToPay()))
                 : nomination.getToPay();
 
         this.teamPayments.put(teamHome, teamHomeSumAmount);
@@ -54,10 +55,10 @@ public class EsorEarnings {
 
     private void addToSum(DtoEsorNomination nomination) {
         if (LocalDate.now().isAfter(nomination.getDate())) {
-            this.alreadyEarnedAmount += nomination.getToPay();
+            this.alreadyEarnedAmount = this.alreadyEarnedAmount.add(nomination.getToPay());
 
         } else {
-            this.futureNominationsAmount += nomination.getToPay();
+            this.futureNominationsAmount = this.futureNominationsAmount.add(nomination.getToPay());
         }
     }
 
