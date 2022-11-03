@@ -17,6 +17,7 @@ public class DtoEsorNomination {
     private Integer costTransport;
     private Integer costTravel;
     private LocalDate date;
+    private String delegationNumber;
     private String departure;
     private Integer distance;
     private Boolean distanceError;
