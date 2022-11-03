@@ -2,6 +2,7 @@ package pl.devims.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class DtoEsorNomination {
     private String teamHome;
     private String teamVisitor;
     private String time;
-    private double toPay;
+    private BigDecimal toPay;
     private int update;
     private String vehicleBrand;
     private String vehicleEngineSize;
