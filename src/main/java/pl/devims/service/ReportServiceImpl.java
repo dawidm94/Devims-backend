@@ -26,7 +26,7 @@ public class ReportServiceImpl implements ReportService{
 
     private String prepareDailyReportMessage() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        List<EsorMetric> yesterdaysLogin = esorMetricDao.findAllByLastSuccessLoginBetween(yesterday.atStartOfDay(), LocalDate.now().atStartOfDay());
+        List<EsorMetric> yesterdaysLogin = esorMetricDao.findAllByLastSuccessLoginBetweenOrderByLastSuccessLoginDesc(yesterday.atStartOfDay(), LocalDate.now().atStartOfDay());
 
         StringBuilder sb = new StringBuilder();
         sb.append("<h2>Logowania dnia ").append(yesterday.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))).append(":</h2>");

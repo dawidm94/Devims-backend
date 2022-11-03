@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface EsorMetricDao extends CrudRepository<EsorMetric, Long> {
     Optional<EsorMetric> findByLoginIgnoreCase(String login);
-    List<EsorMetric> findAllByLastSuccessLoginBetween(LocalDateTime from, LocalDateTime to);
+    List<EsorMetric> findAllByLastSuccessLoginBetweenOrderByLastSuccessLoginDesc(LocalDateTime from, LocalDateTime to);
 }
