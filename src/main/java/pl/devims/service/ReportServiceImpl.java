@@ -3,8 +3,8 @@ package pl.devims.service;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import pl.devims.dao.EsorUserDao;
-import pl.devims.entity.EsorUser;
+import pl.devims.dao.EsorMetricDao;
+import pl.devims.entity.EsorMetric;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -34,29 +34,25 @@ public class ReportServiceImpl implements ReportService{
         sb.append("""
                 <table border="1">
                     <tr>
-                        <th>No</th>
                         <th>Login</th>
                         <th>Licznik</th>
                         <th>Ostatnie logowanie</th>
                     </tr>
                 """);
 
-        for (int i=0; i<yesterdaysLogin.size(); i++) {
-            var singleLogin = yesterdaysLogin.get(i);
+        yesterdaysLogin.forEach(singleLogin ->
             sb.append("<tr>")
-                    .append("<td align=\"center\">")
-                    .append(i+1)
-                    .append("<td align=\"center\">")
+                .append("<td align=\"center\">")
                     .append(singleLogin.getLogin())
-                    .append("</td>")
-                    .append("<td align=\"center\">")
-                    .append(singleLogin.getLoginCounter())
-                    .append("</td>")
-                    .append("<td align=\"center\">")
+                .append("</td>")
+                .append("<td align=\"center\">")
+                    .append(singleLogin.getCounter())
+                .append("</td>")
+                .append("<td align=\"center\">")
                     .append(singleLogin.getLastSuccessLogin().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
-                    .append("</td>")
-                    .append("</tr>");
-        }
+                .append("</td>")
+            .append("</tr>")
+        );
 
         sb.append("</table>");
         return sb.toString();
