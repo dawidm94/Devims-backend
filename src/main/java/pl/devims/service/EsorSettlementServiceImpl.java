@@ -13,6 +13,7 @@ import pl.devims.entity.EsorMatchSettlement;
 import pl.devims.entity.EsorUser;
 import pl.devims.util.AuthTokenUtils;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -110,6 +111,7 @@ public class EsorSettlementServiceImpl implements EsorSettlementService {
         return actualEsorMatchList
                 .stream()
                 .filter(match -> !savedEsorMatchIds.contains(match.getId()))
+                .filter(match -> LocalDate.now().isAfter(match.getDate()))
                 .collect(Collectors.toList());
     }
 }

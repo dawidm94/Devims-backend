@@ -2,6 +2,7 @@ package pl.devims.dto;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -9,7 +10,7 @@ public class DtoEsorMatch {
 
     private List<Object> commisioneers;
     private String contact;
-    private String date;
+    private LocalDate date;
     private String hall;
     private String hallCerificate;
     private String hallMap;
