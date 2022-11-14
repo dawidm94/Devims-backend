@@ -7,10 +7,10 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "esor_metrics")
+@Table(name = "esor_users")
 @NoArgsConstructor
 @Data
-public class EsorMetric {
+public class EsorUser {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
@@ -20,8 +20,8 @@ public class EsorMetric {
     @Column(name = "login", nullable = false)
     private String login;
 
-    @Column(name = "counter", nullable = false)
-    private int counter;
+    @Column(name = "login_counter", nullable = false)
+    private int loginCounter;
 
     @Column(name = "last_success_login")
     private LocalDateTime lastSuccessLogin;
@@ -29,8 +29,8 @@ public class EsorMetric {
     @Column(name = "last_failed_login")
     private LocalDateTime lastFailedLogin;
 
-    public EsorMetric(String login) {
+    public EsorUser(String login) {
         this.login = login;
-        this.counter = 0;
+        this.loginCounter = 0;
     }
 }

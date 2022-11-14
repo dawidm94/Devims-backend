@@ -49,7 +49,7 @@ public class EsorEarningsAsyncServiceImpl implements EsorEarningsAsyncService {
         esorEarningsDao.deleteAllByLastModifiedDateTimeBefore(LocalDateTime.now().minusMinutes(2));
     }
 
-    private DtoEsorNomination getNominationDetails(Long matchId, String authToken) {
+    public DtoEsorNomination getNominationDetails(Long matchId, String authToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + authToken);
 

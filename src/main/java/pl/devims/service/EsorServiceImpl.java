@@ -14,10 +14,10 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import pl.devims.dao.EsorEarningsDao;
-import pl.devims.dao.EsorMetricDao;
+import pl.devims.dao.EsorUserDao;
 import pl.devims.dto.*;
 import pl.devims.entity.EsorEarnings;
-import pl.devims.entity.EsorMetric;
+import pl.devims.entity.EsorUser;
 import pl.devims.model.ProcessStatus;
 
 import java.nio.charset.StandardCharsets;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public class EsorServiceImpl implements EsorService {
     private static final Logger log = LoggerFactory.getLogger(EsorServiceImpl.class);
     private final RestTemplate restTemplate;
-    private final EsorMetricDao esorMetricDao;
+    private final EsorUserDao esorUserDao;
     private final EsorEarningsAsyncService esorEarningsAsyncService;
     private final EsorEarningsDao esorEarningsDao;
 
@@ -72,17 +72,17 @@ public class EsorServiceImpl implements EsorService {
     }
 
     private void updateFailedLoginInEsorMetric(String login) {
-        EsorMetric esorMetric = esorMetricDao.findByLoginIgnoreCase(login).orElse(new EsorMetric(login));
-        esorMetric.setLastFailedLogin(LocalDateTime.now());
-        esorMetricDao.save(esorMetric);
+        EsorUser esorUser = esorUserDao.findByLoginIgnoreCase(login).orElse(new EsorUser(login));
+        esorUser.setLastFailedLogin(LocalDateTime.now());
+        esorUserDao.save(esorUser);
     }
 
     private void increaseEsorMetricCounter(String login) {
-        EsorMetric esorMetric = esorMetricDao.findByLoginIgnoreCase(login).orElse(new EsorMetric(login));
-        esorMetric.setCounter(esorMetric.getCounter() + 1);
-        esorMetric.setLastSuccessLogin(LocalDateTime.now());
+        EsorUser esorUser = esorUserDao.findByLoginIgnoreCase(login).orElse(new EsorUser(login));
+        esorUser.setLoginCounter(esorUser.getLoginCounter() + 1);
+        esorUser.setLastSuccessLogin(LocalDateTime.now());
 
-        esorMetricDao.save(esorMetric);
+        esorUserDao.save(esorUser);
     }
 
     @Override

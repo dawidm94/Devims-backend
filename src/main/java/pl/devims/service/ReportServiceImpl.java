@@ -3,8 +3,8 @@ package pl.devims.service;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import pl.devims.dao.EsorMetricDao;
-import pl.devims.entity.EsorMetric;
+import pl.devims.dao.EsorUserDao;
+import pl.devims.entity.EsorUser;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ReportServiceImpl implements ReportService{
 
     private final EmailService emailService;
-    private final EsorMetricDao esorMetricDao;
+    private final EsorUserDao esorUserDao;
 
     @Override
     @Scheduled(cron = "10 0 0 * * *")
@@ -26,7 +26,7 @@ public class ReportServiceImpl implements ReportService{
 
     private String prepareDailyReportMessage() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        List<EsorMetric> yesterdaysLogin = esorMetricDao.findAllByLastSuccessLoginBetweenOrderByLastSuccessLoginDesc(yesterday.atStartOfDay(), LocalDate.now().atStartOfDay());
+        List<EsorUser> yesterdaysLogin = esorUserDao.findAllByLastSuccessLoginBetweenOrderByLastSuccessLoginDesc(yesterday.atStartOfDay(), LocalDate.now().atStartOfDay());
 
         StringBuilder sb = new StringBuilder();
         sb.append("<h2>Logowania dnia ").append(yesterday.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))).append(":</h2>");
@@ -50,7 +50,7 @@ public class ReportServiceImpl implements ReportService{
                     .append(singleLogin.getLogin())
                     .append("</td>")
                     .append("<td align=\"center\">")
-                    .append(singleLogin.getCounter())
+                    .append(singleLogin.getLoginCounter())
                     .append("</td>")
                     .append("<td align=\"center\">")
                     .append(singleLogin.getLastSuccessLogin().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
