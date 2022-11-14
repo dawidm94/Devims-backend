@@ -58,26 +58,26 @@ public class EsorServiceImpl implements EsorService {
         try {
             String response = restTemplate.postForObject("https://sedzia.pzkosz.pl/api/login", esorCredentials, String.class);
 
-            increaseEsorMetricCounter(login);
+            increaseEsorLoginCounter(login);
 
             JSONObject jsonObject = new JSONObject(response);
             return jsonObject.getString("token");
 
         } catch (Exception e) {
-            updateFailedLoginInEsorMetric(login);
+            updateFailedEsorLogin(login);
 
             log.error("Login esor error.", e);
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
     }
 
-    private void updateFailedLoginInEsorMetric(String login) {
+    private void updateFailedEsorLogin(String login) {
         EsorUser esorUser = esorUserDao.findByLoginIgnoreCase(login).orElse(new EsorUser(login));
         esorUser.setLastFailedLogin(LocalDateTime.now());
         esorUserDao.save(esorUser);
     }
 
-    private void increaseEsorMetricCounter(String login) {
+    private void increaseEsorLoginCounter(String login) {
         EsorUser esorUser = esorUserDao.findByLoginIgnoreCase(login).orElse(new EsorUser(login));
         esorUser.setLoginCounter(esorUser.getLoginCounter() + 1);
         esorUser.setLastSuccessLogin(LocalDateTime.now());
