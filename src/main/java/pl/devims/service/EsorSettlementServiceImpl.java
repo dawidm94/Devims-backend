@@ -71,6 +71,8 @@ public class EsorSettlementServiceImpl implements EsorSettlementService {
             settlementWithMatchList.add(settlementWithMatch);
         });
 
+        settlementWithMatchList.sort(Comparator.comparing(x -> x.getMatch().getDate()));
+
         return settlementWithMatchList;
     }
 
