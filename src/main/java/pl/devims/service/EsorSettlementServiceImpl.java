@@ -113,7 +113,7 @@ public class EsorSettlementServiceImpl implements EsorSettlementService {
         return actualEsorMatchList
                 .stream()
                 .filter(match -> !savedEsorMatchIds.contains(match.getId()))
-                .filter(match -> LocalDate.now().isAfter(match.getDate()))
+                .filter(match -> LocalDate.now().isAfter(LocalDate.parse(match.getDate())))
                 .collect(Collectors.toList());
     }
 }
