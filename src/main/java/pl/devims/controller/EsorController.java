@@ -2,6 +2,7 @@ package pl.devims.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.devims.annotation.LogRequest;
 import pl.devims.dto.*;
 import pl.devims.entity.EsorEarnings;
 import pl.devims.service.EsorService;
@@ -45,6 +46,7 @@ public class EsorController {
     }
 
     @PostMapping("/periods")
+    @LogRequest
     public ResponseEntity<Void> setPeriods(@RequestHeader(name="Esor-Token") String authToken, @RequestBody DtoEsorSetPeriod esorSetPeriod) throws InterruptedException {
         esorService.setPeriods(esorSetPeriod, authToken);
         return ResponseEntity.ok().build();
@@ -56,6 +58,7 @@ public class EsorController {
     }
 
     @GetMapping("/nominations")
+    @LogRequest
     public ResponseEntity<DtoEsorTimetable> getNominations(@RequestHeader(name="Esor-Token") String authToken, @RequestParam("seasonId") Long seasonId) {
         return ResponseEntity.ok(esorService.getNominations(seasonId, authToken));
     }
@@ -66,12 +69,14 @@ public class EsorController {
     }
 
     @PostMapping("/nominations/{matchId}/confirm")
+    @LogRequest
     public ResponseEntity<Void> confirmNomination(@RequestHeader(name="Esor-Token") String authToken, @RequestBody DtoEsorConfirmNomination nomination, @PathVariable Long matchId) {
         esorService.confirmNotification(nomination, matchId, authToken);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/nominations/{matchId}/reject")
+    @LogRequest
     public ResponseEntity<Void> rejectNomination(@RequestHeader(name="Esor-Token") String authToken, @PathVariable Long matchId) {
         esorService.rejectNomination(matchId, authToken);
         return ResponseEntity.ok().build();
@@ -88,16 +93,19 @@ public class EsorController {
     }
 
     @GetMapping("/match/{matchId}/delegation")
+    @LogRequest
     public ResponseEntity<byte[]> getDelegation(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("matchId") Long matchId, @RequestParam("seasonId") Long seasonId) throws Exception {
         return esorService.getDelegation(matchId, seasonId, authToken);
     }
 
     @GetMapping("/match/{matchId}/metric")
+    @LogRequest
     public ResponseEntity<byte[]> getMetric(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("matchId") Long matchId) {
         return esorService.getMetric(matchId, authToken);
     }
 
     @GetMapping("/match/{matchId}/ical")
+    @LogRequest
     public ResponseEntity<byte[]> getIcal(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("matchId") Long matchId) {
         return esorService.getIcal(matchId, authToken);
     }
@@ -113,6 +121,7 @@ public class EsorController {
     }
 
     @GetMapping("/blankets/{blanketId}/{districtId}")
+    @LogRequest
     public ResponseEntity<byte[]> getBlanket(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("blanketId") Long blanketId, @PathVariable("districtId") Long districtId) {
         return esorService.getBlanket(blanketId, districtId, authToken);
     }
@@ -128,6 +137,7 @@ public class EsorController {
     }
 
     @PostMapping("/earnings")
+    @LogRequest
     public ResponseEntity<EsorEarnings> calculateEarnings(@RequestHeader(name="Esor-Token") String authToken, @RequestBody Long seasonId) {
         return esorService.calculateEarnings(seasonId, authToken);
     }

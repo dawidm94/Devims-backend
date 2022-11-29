@@ -2,6 +2,7 @@ package pl.devims.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.devims.annotation.LogRequest;
 import pl.devims.dto.DtoEsorSettlementWithMatch;
 import pl.devims.entity.EsorMatchSettlement;
 import pl.devims.service.EsorSettlementService;
@@ -26,14 +27,9 @@ public class EsorSettlementController {
     }
 
     @PutMapping()
+    @LogRequest
     public ResponseEntity<Void> updateSettlements(@RequestBody List<EsorMatchSettlement> settlements, @RequestHeader(name="Esor-Token") String authToken) {
         settlementService.updateSettlements(settlements, authToken);
         return ResponseEntity.ok().build();
     }
-
-//    @PostMapping("/periods")
-//    public ResponseEntity<Void> setPeriods(@RequestHeader(name="Esor-Token") String authToken, @RequestBody DtoEsorSetPeriod esorSetPeriod) throws InterruptedException {
-//        esorService.setPeriods(esorSetPeriod, authToken);
-//        return ResponseEntity.ok().build();
-//    }
 }
