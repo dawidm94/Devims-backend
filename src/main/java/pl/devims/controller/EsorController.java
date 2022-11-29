@@ -111,6 +111,7 @@ public class EsorController {
     }
 
     @GetMapping("/match/{matchId}")
+    @LogRequest
     public ResponseEntity<DtoEsorMatch> getMatch(@RequestHeader(name="Esor-Token") String authToken, @PathVariable("matchId") Long matchId) {
         return esorService.getMatch(matchId, authToken);
     }
